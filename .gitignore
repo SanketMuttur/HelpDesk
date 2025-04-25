@@ -1,3 +1,6 @@
 .idea/
 Diagrams/ActivityDiagram/Major*/
 Diagrams/ActivityDiagram/Minor*/
+Diagrams/ClassDiagram/
+Diagrams/StateDiagram/
+Diagrams/UseCaseDiagram/
