@@ -1,0 +1,72 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#5D8AA8', 'primaryTextColor': '#fff', 'primaryBorderColor': '#1F456E', 'lineColor': '#1F456E', 'secondaryColor': '#006400', 'tertiaryColor': '#fff' }}}%%
+flowchart TB
+    subgraph User
+        A1[Start] --> A2[Navigate to Posts Page]
+        A2 --> A3[View Post List]
+        A3 --> A4[Create New Post]
+        A3 --> A5[View Existing Post]
+        A5 --> A6[Edit Own Post]
+        A5 --> A7[Delete Own Post]
+        A3 --> A8[Search for Posts]
+        A8 --> A9[Enter Search Criteria]
+        A9 --> A10[Submit Search]
+        A4 --> A11[Fill Post Form]
+        A11 --> A12[Add Tags]
+        A12 --> A13[Select Category]
+        A13 --> A14[Submit Post]
+        A6 --> A15[Modify Post Content]
+        A15 --> A16[Submit Changes]
+        A10 --> A17[View Search Results]
+        A17 --> A5
+        A7 --> A18[Confirm Deletion]
+        A18 --> A19[End]
+    end
+    
+    subgraph System
+        B1[Load All Posts]
+        B2[Load Post Details]
+        B3[Check Post Ownership]
+        B4{Is Owner?}
+        B5[Process Search Query]
+        B6[Filter Posts]
+        B7[Validate Post Data]
+        B8{Is Valid?}
+        B9[Save New Post]
+        B10[Show Error Message]
+        B11[Validate Post Updates]
+        B12{Is Valid?}
+        B13[Update Post]
+        B14[Show Error Message]
+        B15[Delete Post]
+        B16[Redirect to Posts List]
+    end
+    
+    A2 --> B1
+    B1 --> A3
+    A5 --> B2
+    B2 --> A5
+    A6 --> B3
+    B3 --> B4
+    B4 -->|Yes| A6
+    B4 -->|No| A5
+    A7 --> B3
+    B3 --> B4
+    B4 -->|Yes| A7
+    A10 --> B5
+    B5 --> B6
+    B6 --> A17
+    A14 --> B7
+    B7 --> B8
+    B8 -->|Yes| B9
+    B8 -->|No| B10
+    B9 --> A3
+    B10 --> A11
+    A16 --> B11
+    B11 --> B12
+    B12 -->|Yes| B13
+    B12 -->|No| B14
+    B13 --> A5
+    B14 --> A15
+    A18 --> B15
+    B15 --> B16
+    B16 --> A3

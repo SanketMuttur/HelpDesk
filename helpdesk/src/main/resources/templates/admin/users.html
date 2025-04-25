@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - HelpDesk</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a th:href="@{/}" class="navbar-logo">HelpDesk</a>
+            <div class="navbar-links">
+                <a th:href="@{/dashboard}">Dashboard</a>
+                <a th:href="@{/posts}">Posts</a>
+                <a th:href="@{/categories}">Categories</a>
+                <a th:href="@{/user/profile}">Profile</a>
+                <a th:href="@{/admin}" class="active">Admin</a>
+                <a th:href="@{/logout}">Logout</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="admin-header">
+            <h1>User Management</h1>
+            <div class="admin-nav">
+                <a th:href="@{/admin}" class="admin-nav-item">Dashboard</a>
+                <a th:href="@{/admin/users}" class="admin-nav-item active">Users</a>
+                <a th:href="@{/admin/posts}" class="admin-nav-item">Posts</a>
+                <a th:href="@{/admin/comments}" class="admin-nav-item">Comments</a>
+                <a th:href="@{/admin/reports}" class="admin-nav-item">Reports</a>
+            </div>
+        </div>
+        
+        <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+        
+        <div class="admin-filters">
+            <div class="search-box">
+                <input type="text" id="userSearch" placeholder="Search users...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="filter-group">
+                <label for="statusFilter">Status:</label>
+                <select id="statusFilter">
+                    <option value="all">All</option>
+                    <option value="ACTIVE">Active</option>
+                    <option value="SUSPENDED">Suspended</option>
+                    <option value="BANNED">Banned</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="admin-table" id="usersTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Roles</th>
+                        <th>Posts</th>
+                        <th>Comments</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.id}">1</td>
+                        <td th:text="${user.username}">username</td>
+                        <td th:text="${user.email}">email</td>
+                        <td th:text="${user.firstName + ' ' + user.lastName}">Full Name</td>
+                        <td>
+                            <span class="status-badge" 
+                                  th:classappend="${user.accountStatus == 'ACTIVE' ? 'status-active' : (user.accountStatus == 'SUSPENDED' ? 'status-suspended' : 'status-banned')}"
+                                  th:text="${user.accountStatus}">
+                                ACTIVE
+                            </span>
+                        </td>
+                        <td>
+                            <span class="role-badge" th:each="role : ${user.roles}" th:text="${role.replace('ROLE_', '')}">USER</span>
+                        </td>
+                        <td th:text="${user.postCount}">0</td>
+                        <td th:text="${user.commentCount}">0</td>
+                        <td th:text="${#dates.format(user.createdAt, 'yyyy-MM-dd')}">2023-01-01</td>
+                        <td>
+                            <div class="action-buttons">
+                                <a th:href="@{/admin/users/{id}(id=${user.id})}" class="btn-icon" title="View User">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <form th:action="@{/admin/users/{id}/toggle-status(id=${user.id})}" method="post" class="inline-form">
+                                    <button type="submit" class="btn-icon" th:title="${user.accountStatus == 'ACTIVE' ? 'Suspend User' : 'Activate User'}">
+                                        <i class="fas" th:classappend="${user.accountStatus == 'ACTIVE' ? 'fa-ban' : 'fa-check'}"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2023 HelpDesk. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userSearch = document.getElementById('userSearch');
+            const statusFilter = document.getElementById('statusFilter');
+            const usersTable = document.getElementById('usersTable');
+            const tableRows = usersTable.querySelectorAll('tbody tr');
+            
+            function filterTable() {
+                const searchTerm = userSearch.value.toLowerCase();
+                const statusValue = statusFilter.value;
+                
+                tableRows.forEach(row => {
+                    const username = row.cells[1].textContent.toLowerCase();
+                    const email = row.cells[2].textContent.toLowerCase();
+                    const name = row.cells[3].textContent.toLowerCase();
+                    const status = row.cells[4].textContent.trim();
+                    
+                    const matchesSearch = username.includes(searchTerm) || 
+                                         email.includes(searchTerm) || 
+                                         name.includes(searchTerm);
+                    
+                    const matchesStatus = statusValue === 'all' || status === statusValue;
+                    
+                    row.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
+                });
+            }
+            
+            userSearch.addEventListener('input', filterTable);
+            statusFilter.addEventListener('change', filterTable);
+        });
+    </script>
+</body>
+</html>

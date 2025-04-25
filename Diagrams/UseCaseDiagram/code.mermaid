@@ -1,0 +1,46 @@
+flowchart TB
+    %% Actors
+    User([User])
+    Admin([Admin])
+    
+    %% Main system nodes
+    UserFeatures["User Features"]
+    AdminFeatures["Admin Features"]
+    
+    %% Core feature categories - vertical layout
+    Auth["Authentication"]
+    Content["Content Management"]
+    Interaction["User Interaction"]
+    AdminDash["Admin Dashboard"]
+    AdminMgmt["Admin Management"]
+    
+    %% Connect actors to main feature groups
+    User --> UserFeatures
+    Admin --> AdminFeatures
+    Admin -.->|extends| User
+    
+    %% Connect main feature groups to categories
+    UserFeatures --> Auth
+    UserFeatures --> Content
+    UserFeatures --> Interaction
+    
+    AdminFeatures --> AdminDash
+    AdminFeatures --> AdminMgmt
+    
+    %% Connect categories to specific use cases
+    Auth --> Auth1["Register, Login"]
+    
+    Content --> Content1["View/Create/Edit/Delete Posts"]
+    Content --> Content2["Search by Title/Content/Category/Tag"]
+    Content --> Content3["View Profile, Update Profile"]
+    
+    Interaction --> Int1["Comment, Reply"]
+    Interaction --> Int2["Upvote/Downvote Posts & Comments"]
+    Interaction --> Int3["Report Posts & Comments"]
+    
+    AdminDash --> AdminDash1["View Statistics, Search, Filter"]
+    
+    AdminMgmt --> AdminMgmt1["Manage Users: View/Suspend/Ban/Change Role"]
+    AdminMgmt --> AdminMgmt2["Manage Posts & Comments: View/Hide/Delete"]
+    AdminMgmt --> AdminMgmt3["Manage Categories: Create/Edit/Delete"]
+    AdminMgmt --> AdminMgmt4["Manage Reports: View/Resolve"]

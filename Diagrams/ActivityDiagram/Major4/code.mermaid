@@ -1,0 +1,75 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#5D8AA8', 'primaryTextColor': '#fff', 'primaryBorderColor': '#1F456E', 'lineColor': '#1F456E', 'secondaryColor': '#006400', 'tertiaryColor': '#fff' }}}%%
+flowchart TB
+    subgraph Admin
+        A1[Start] --> A2[Access Admin Dashboard]
+        A2 --> A3[View Content Reports]
+        A2 --> A4[Browse Posts]
+        A2 --> A5[Browse Comments]
+        A3 --> A6[Review Reported Post]
+        A3 --> A7[Review Reported Comment]
+        A6 --> A8[Decide Action]
+        A7 --> A9[Decide Action]
+        A8 --> A10[Hide/Unhide Post]
+        A8 --> A11[Delete Post]
+        A8 --> A12[Resolve Report]
+        A9 --> A13[Hide/Unhide Comment]
+        A9 --> A14[Delete Comment]
+        A9 --> A15[Resolve Report]
+        A4 --> A16[View Post Details]
+        A16 --> A10
+        A16 --> A11
+        A5 --> A17[View Comment Details]
+        A17 --> A13
+        A17 --> A14
+        A10 --> A18[End]
+        A11 --> A18
+        A12 --> A18
+        A13 --> A18
+        A14 --> A18
+        A15 --> A18
+    end
+    
+    subgraph System
+        B1[Load Admin Dashboard]
+        B2[Load Reports List]
+        B3[Load Posts List]
+        B4[Load Comments List]
+        B5[Load Reported Post]
+        B6[Load Reported Comment]
+        B7[Update Post Visibility]
+        B8[Remove Post]
+        B9[Mark Report Resolved]
+        B10[Update Comment Visibility]
+        B11[Remove Comment]
+        B12[Load Post Details]
+        B13[Load Comment Details]
+    end
+    
+    A1 --> B1
+    B1 --> A2
+    A3 --> B2
+    B2 --> A3
+    A4 --> B3
+    B3 --> A4
+    A5 --> B4
+    B4 --> A5
+    A6 --> B5
+    B5 --> A6
+    A7 --> B6
+    B6 --> A7
+    A10 --> B7
+    B7 --> A18
+    A11 --> B8
+    B8 --> A18
+    A12 --> B9
+    B9 --> A18
+    A13 --> B10
+    B10 --> A18
+    A14 --> B11
+    B11 --> A18
+    A15 --> B9
+    B9 --> A18
+    A16 --> B12
+    B12 --> A16
+    A17 --> B13
+    B13 --> A17

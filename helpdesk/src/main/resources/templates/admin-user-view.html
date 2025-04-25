@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details - HelpDesk Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a th:href="@{/}" class="navbar-logo">HelpDesk</a>
+            <div class="navbar-links">
+                <a th:href="@{/dashboard}">Dashboard</a>
+                <a th:href="@{/user/profile}">Profile</a>
+                <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin</a>
+                <a th:href="@{/logout}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <h1 class="dashboard-header">User Details</h1>
+        
+        <div class="login-container">
+            <h2>User Information</h2>
+            
+            <div th:if="${user != null}">
+                <div style="text-align: left; color: #f9fafb; margin-bottom: 20px;">
+                    <p><strong>ID:</strong> <span th:text="${user.id}"></span></p>
+                    <p><strong>Username:</strong> <span th:text="${user.username}"></span></p>
+                    <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+                    <p><strong>First Name:</strong> <span th:text="${user.firstName}"></span></p>
+                    <p><strong>Last Name:</strong> <span th:text="${user.lastName}"></span></p>
+                    <p><strong>Created At:</strong> <span th:text="${#dates.format(user.createdAt, 'dd-MM-yyyy HH:mm')}"></span></p>
+                    <p><strong>Updated At:</strong> <span th:text="${#dates.format(user.updatedAt, 'dd-MM-yyyy HH:mm')}"></span></p>
+                    <p><strong>Roles:</strong> 
+                        <span th:each="role, iterStat : ${user.roles}">
+                            <span th:text="${role.name.replace('ROLE_', '')}"></span>
+                            <span th:if="${!iterStat.last}">, </span>
+                        </span>
+                    </p>
+                </div>
+                
+                <div>
+                    <a th:href="@{/admin}" class="login-button">Back to Admin Dashboard</a>
+                </div>
+            </div>
+            <div th:if="${user == null}">
+                <p>User not found.</p>
+                <a th:href="@{/admin}" class="login-button">Back to Admin Dashboard</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

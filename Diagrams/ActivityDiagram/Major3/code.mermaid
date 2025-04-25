@@ -1,0 +1,74 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#5D8AA8', 'primaryTextColor': '#fff', 'primaryBorderColor': '#1F456E', 'lineColor': '#1F456E', 'secondaryColor': '#006400', 'tertiaryColor': '#fff' }}}%%
+flowchart TB
+    subgraph User
+        A1[Start] --> A2[View Post]
+        A2 --> A3[Read Comments]
+        A3 --> A4[Write New Comment]
+        A3 --> A5[Reply to Existing Comment]
+        A3 --> A6[Vote on Post]
+        A3 --> A7[Vote on Comment]
+        A4 --> A8[Enter Comment Text]
+        A8 --> A9[Submit Comment]
+        A5 --> A10[Enter Reply Text]
+        A10 --> A11[Submit Reply]
+        A6 --> A12[Select Upvote/Downvote]
+        A7 --> A13[Select Upvote/Downvote]
+        A12 --> A14[End]
+        A13 --> A14
+        A9 --> A3
+        A11 --> A3
+    end
+    
+    subgraph System
+        B1[Load Post Details]
+        B2[Load Comments]
+        B3[Validate Comment]
+        B4{Is Valid?}
+        B5[Save Comment]
+        B6[Show Error Message]
+        B7[Validate Reply]
+        B8{Is Valid?}
+        B9[Save Reply]
+        B10[Show Error Message]
+        B11[Check Previous Vote]
+        B12{Already Voted?}
+        B13[Update Vote]
+        B14[Create New Vote]
+        B15[Update Post Vote Count]
+        B16[Check Previous Vote]
+        B17{Already Voted?}
+        B18[Update Vote]
+        B19[Create New Vote]
+        B20[Update Comment Vote Count]
+    end
+    
+    A1 --> B1
+    B1 --> A2
+    A2 --> B2
+    B2 --> A3
+    A9 --> B3
+    B3 --> B4
+    B4 -->|Yes| B5
+    B4 -->|No| B6
+    B5 --> A3
+    B6 --> A8
+    A11 --> B7
+    B7 --> B8
+    B8 -->|Yes| B9
+    B8 -->|No| B10
+    B9 --> A3
+    B10 --> A10
+    A12 --> B11
+    B11 --> B12
+    B12 -->|Yes| B13
+    B12 -->|No| B14
+    B13 --> B15
+    B14 --> B15
+    B15 --> A14
+    A13 --> B16
+    B16 --> B17
+    B17 -->|Yes| B18
+    B17 -->|No| B19
+    B18 --> B20
+    B19 --> B20
+    B20 --> A14

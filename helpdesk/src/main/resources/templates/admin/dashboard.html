@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - HelpDesk</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a th:href="@{/}" class="navbar-logo">HelpDesk</a>
+            <div class="navbar-links">
+                <a th:href="@{/dashboard}">Dashboard</a>
+                <a th:href="@{/posts}">Posts</a>
+                <a th:href="@{/categories}">Categories</a>
+                <a th:href="@{/user/profile}">Profile</a>
+                <a th:href="@{/admin}" class="active">Admin</a>
+                <a th:href="@{/logout}">Logout</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="admin-header">
+            <h1>Admin Dashboard</h1>
+            <div class="admin-nav">
+                <a th:href="@{/admin}" class="admin-nav-item active">Dashboard</a>
+                <a th:href="@{/admin/users}" class="admin-nav-item">Users</a>
+                <a th:href="@{/admin/posts}" class="admin-nav-item">Posts</a>
+                <a th:href="@{/admin/comments}" class="admin-nav-item">Comments</a>
+                <a th:href="@{/admin/reports}" class="admin-nav-item">Reports</a>
+            </div>
+        </div>
+        
+        <div class="admin-stats">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Total Users</h3>
+                    <p class="stat-number" th:text="${totalUsers}">0</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Total Posts</h3>
+                    <p class="stat-number" th:text="${totalPosts}">0</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Total Comments</h3>
+                    <p class="stat-number" th:text="${totalComments}">0</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-flag"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Reports</h3>
+                    <p class="stat-number">
+                        <a th:href="@{/admin/reports}" th:text="${(postReports != null ? postReports.size() : 0) + (commentReports != null ? commentReports.size() : 0)}">0</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="admin-recent">
+            <div class="admin-section">
+                <h2>Recent Users</h2>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="user : ${users}" th:if="${userStat.index < 5}">
+                                <td th:text="${user.username}">username</td>
+                                <td th:text="${user.email}">email</td>
+                                <td>
+                                    <span class="status-badge" 
+                                          th:classappend="${user.accountStatus == 'ACTIVE' ? 'status-active' : (user.accountStatus == 'SUSPENDED' ? 'status-suspended' : 'status-banned')}"
+                                          th:text="${user.accountStatus}">
+                                        ACTIVE
+                                    </span>
+                                </td>
+                                <td th:text="${#dates.format(user.createdAt, 'yyyy-MM-dd')}">2023-01-01</td>
+                                <td>
+                                    <a th:href="@{/admin/users/{id}(id=${user.id})}" class="btn-icon" title="View User">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <a th:href="@{/admin/users}" class="view-all">View All Users</a>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2023 HelpDesk. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize any dashboard functionality
+            console.log('Admin dashboard loaded');
+            
+            // Add event listeners for admin actions
+            const adminNavItems = document.querySelectorAll('.admin-nav-item');
+            adminNavItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove active class from all items
+                    adminNavItems.forEach(i => i.classList.remove('active'));
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                });
+            });
+            
+            // Function to format numbers with commas
+            function formatNumber(num) {
+                return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+            
+            // Format all stat numbers
+            const statNumbers = document.querySelectorAll('.stat-number');
+            statNumbers.forEach(stat => {
+                if (!isNaN(stat.textContent)) {
+                    stat.textContent = formatNumber(parseInt(stat.textContent));
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

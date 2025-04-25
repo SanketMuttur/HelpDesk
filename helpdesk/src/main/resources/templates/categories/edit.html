@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Category - HelpDesk</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a th:href="@{/}" class="navbar-logo">HelpDesk</a>
+            <div class="navbar-links">
+                <a th:href="@{/dashboard}">Dashboard</a>
+                <a th:href="@{/posts}">Posts</a>
+                <a th:href="@{/categories}">Categories</a>
+                <a th:href="@{/user/profile}">Profile</a>
+                <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin</a>
+                <a th:href="@{/logout}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <h1 class="dashboard-header">Edit Category</h1>
+        
+        <div class="card">
+            <form th:action="@{/categories/edit/{id}(id=${category.id})}" th:object="${category}" method="post">
+                <input type="hidden" th:field="*{id}">
+                
+                <div class="form-group">
+                    <label class="form-label" for="name">Name</label>
+                    <input type="text" id="name" th:field="*{name}" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="description">Description</label>
+                    <textarea id="description" th:field="*{description}" class="form-input" rows="5"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Update Category</button>
+                <a th:href="@{/categories}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

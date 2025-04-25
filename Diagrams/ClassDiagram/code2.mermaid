@@ -1,0 +1,111 @@
+classDiagram
+    %% Core Model Classes (simplified)
+    class User {
+        -id: Long
+        -username: String
+        -email: String
+        -roles: Set~Role~
+    }
+    
+    class Post {
+        -id: Long
+        -title: String
+        -content: String
+        -author: User
+        -category: Category
+    }
+    
+    class Comment {
+        -id: Long
+        -content: String
+        -author: User
+        -post: Post
+    }
+    
+    class Category {
+        -id: Long
+        -name: String
+    }
+    
+    class Vote {
+        -upvote: boolean
+        -user: User
+    }
+    
+    class Report {
+        -reason: String
+        -resolved: boolean
+    }
+    
+    %% Repository Layer
+    class Repository {
+        <<interface>>
+        +findById()
+        +save()
+        +delete()
+    }
+    
+    %% Service Layer
+    class Service {
+        <<interface>>
+        +find()
+        +create()
+        +update()
+        +delete()
+    }
+    
+    %% Controller Layer
+    class UserController {
+        +showProfile()
+        +updateProfile()
+    }
+    
+    class PostController {
+        +showPosts()
+        +createPost()
+        +updatePost()
+        +deletePost()
+    }
+    
+    class CommentController {
+        +createComment()
+        +updateComment()
+        +deleteComment()
+    }
+    
+    class AdminController {
+        +managePosts()
+        +manageUsers()
+        +manageComments()
+        +manageReports()
+    }
+    
+    %% MVC Architecture
+    Repository --|> User : manages
+    Repository --|> Post : manages
+    Repository --|> Comment : manages
+    Repository --|> Category : manages
+    Repository --|> Vote : manages
+    Repository --|> Report : manages
+    
+    Service ..> Repository : uses
+    
+    UserController ..> Service : uses
+    PostController ..> Service : uses
+    CommentController ..> Service : uses
+    AdminController ..> Service : uses
+    
+    %% Model Relationships
+    User "1" -- "many" Post : authors
+    User "1" -- "many" Comment : authors
+    User "1" -- "many" Vote : casts
+    User "1" -- "many" Report : submits
+    
+    Post "many" -- "1" Category : belongs to
+    Post "1" -- "many" Comment : has
+    Post "1" -- "many" Vote : receives
+    Post "1" -- "many" Report : receives
+    
+    Comment "many" -- "1" Post : belongs to
+    Comment "1" -- "many" Vote : receives
+    Comment "1" -- "many" Report : receives

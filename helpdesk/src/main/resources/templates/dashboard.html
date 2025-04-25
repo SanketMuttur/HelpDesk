@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - HelpDesk</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a th:href="@{/}" class="navbar-logo">HelpDesk</a>
+            <div class="navbar-links">
+                <a th:href="@{/dashboard}">Dashboard</a>
+                <a th:href="@{/posts}">Posts</a>
+                <a th:href="@{/categories}">Categories</a>
+                <a th:href="@{/user/profile}">Profile</a>
+                <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin</a>
+                <a th:href="@{/logout}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <h1 class="dashboard-header">Welcome to HelpDesk, <span th:text="${#authentication.name}"></span>!</h1>
+        
+        <div class="card">
+            <h2>Quick Actions</h2>
+            <div class="dashboard-actions">
+                <a th:href="@{/posts/create}" class="btn btn-primary">Create New Post</a>
+                <a th:href="@{/posts}" class="btn btn-secondary">Browse Posts</a>
+                <a th:href="@{/categories}" class="btn btn-secondary">Browse Categories</a>
+                <a th:href="@{/user/profile}" class="btn btn-secondary">View Profile</a>
+                <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}" class="btn btn-secondary">Admin Panel</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Recent Posts</h2>
+            <div id="recent-posts">
+                <p>Loading recent posts...</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Popular Categories</h2>
+            <div id="popular-categories">
+                <p>Loading popular categories...</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Fetch recent posts
+        fetch('/posts')
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const posts = Array.from(doc.querySelectorAll('.dashboard-card')).slice(0, 3);
+                
+                const recentPostsContainer = document.getElementById('recent-posts');
+                recentPostsContainer.innerHTML = '';
+                
+                if (posts.length === 0) {
+                    recentPostsContainer.innerHTML = '<p>No posts available yet.</p>';
+                } else {
+                    posts.forEach(post => {
+                        recentPostsContainer.appendChild(post);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching recent posts:', error);
+                document.getElementById('recent-posts').innerHTML = '<p>Error loading recent posts.</p>';
+            });
+        
+        // Fetch popular categories
+        fetch('/categories')
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const categories = Array.from(doc.querySelectorAll('.dashboard-card')).slice(0, 6);
+                
+                const categoriesContainer = document.getElementById('popular-categories');
+                categoriesContainer.innerHTML = '';
+                
+                if (categories.length === 0) {
+                    categoriesContainer.innerHTML = '<p>No categories available yet.</p>';
+                } else {
+                    categories.forEach(category => {
+                        categoriesContainer.appendChild(category);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching categories:', error);
+                document.getElementById('popular-categories').innerHTML = '<p>Failed to load categories.</p>';
+            });
+    </script>
+</body>
+</html>

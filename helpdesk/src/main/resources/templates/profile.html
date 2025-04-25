@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - HelpDesk</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="login-container">
+        <h2>User Profile</h2>
+        
+        <div th:if="${param.success}" class="alert alert-success">
+            Profile updated successfully!
+        </div>
+        
+        <form th:action="@{/user/profile/update}" method="POST" th:object="${user}">
+            <input type="hidden" th:field="*{id}">
+            
+            <div class="form-group">
+                <input type="text" th:field="*{firstName}" class="login-input" placeholder="First Name" required>
+            </div>
+            
+            <div class="form-group">
+                <input type="text" th:field="*{lastName}" class="login-input" placeholder="Last Name" required>
+            </div>
+            
+            <div class="form-group">
+                <input type="text" th:field="*{username}" class="login-input" placeholder="Username" readonly>
+                <small>Username cannot be changed</small>
+            </div>
+            
+            <div class="form-group">
+                <input type="email" th:field="*{email}" class="login-input" placeholder="Email" required>
+            </div>
+            
+            <button type="submit" class="login-button">Update Profile</button>
+        </form>
+        
+        <div class="forgot-password">
+            <a th:href="@{/dashboard}">Back to Dashboard</a> | 
+            <a th:href="@{/logout}">Logout</a>
+        </div>
+    </div>
+</body>
+</html>

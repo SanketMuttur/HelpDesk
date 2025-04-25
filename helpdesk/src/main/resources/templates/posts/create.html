@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post - HelpDesk</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a th:href="@{/}" class="navbar-logo">HelpDesk</a>
+            <div class="navbar-links">
+                <a th:href="@{/dashboard}">Dashboard</a>
+                <a th:href="@{/posts}">Posts</a>
+                <a th:href="@{/categories}">Categories</a>
+                <a th:href="@{/user/profile}">Profile</a>
+                <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin</a>
+                <a th:href="@{/logout}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <h1 class="dashboard-header">Create New Post</h1>
+        
+        <div class="card">
+            <form th:action="@{/posts/create}" th:object="${post}" method="post">
+                <div class="form-group">
+                    <label class="form-label" for="title">Title</label>
+                    <input type="text" id="title" th:field="*{title}" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="categoryId">Category</label>
+                    <select id="categoryId" th:field="*{categoryId}" class="form-input" required>
+                        <option value="">-- Select Category --</option>
+                        <option th:each="category : ${categories}" 
+                                th:value="${category.id}" 
+                                th:text="${category.name}"></option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="tags">Tags (comma separated)</label>
+                    <input type="text" id="tags" name="tagsInput" class="form-input" placeholder="e.g. java, spring, hibernate">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="content">Content</label>
+                    <textarea id="content" th:field="*{content}" class="form-input" rows="10" required></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Create Post</button>
+                <a th:href="@{/posts}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Process tags
+            const tagsInput = document.querySelector('#tags').value;
+            if (tagsInput) {
+                const tagsArray = tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag);
+                
+                // Remove any existing hidden tag inputs
+                document.querySelectorAll('input[name="tags"]').forEach(el => el.remove());
+                
+                // Create hidden inputs for each tag
+                tagsArray.forEach(tag => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'tags';
+                    input.value = tag;
+                    this.appendChild(input);
+                });
+            }
+            
+            this.submit();
+        });
+    </script>
+</body>
+</html>

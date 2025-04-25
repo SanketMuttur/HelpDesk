@@ -1,0 +1,108 @@
+---
+config:
+  theme: neo
+  layout: elk
+  look: neo
+---
+stateDiagram
+  direction LR
+  state UserMgmt {
+    direction TB
+    [*] --> Inactive
+    Inactive --> Registered:Register
+    Registered --> Authenticated:Login
+    Authenticated --> Inactive:Logout
+    Authenticated --> Suspended:Admin Suspends
+    Suspended --> Authenticated:Admin Unsuspends
+    Authenticated --> Banned:Admin Bans
+    state RoleMgmt {
+      direction TB
+      Normal --> Admin:Promote
+      Admin --> Normal:Demote
+      Normal
+      Admin
+    }
+  }
+  state ContentMgmt {
+    direction TB
+    state PostLife {
+      direction TB
+      [*] --> Draft
+      Draft --> Published:Submit
+      Published --> Edited:Edit
+      Edited --> Published:Update
+      Published --> Hidden:Hide
+      Hidden --> Published:Unhide
+      Published --> Deleted:Delete
+      Hidden --> Deleted:Delete
+[*]      Draft
+      Published
+      Edited
+      Hidden
+      Deleted
+    }
+    state CommentLife {
+      direction TB
+      [*] --> CommentDraft
+      CommentDraft --> CommentPublished:Submit
+      CommentPublished --> CommentEdited:Edit
+      CommentPublished --> CommentHidden:Hide
+      CommentHidden --> CommentPublished:Unhide
+      CommentPublished --> CommentDeleted:Delete
+[*]      CommentDraft
+      CommentPublished
+      CommentEdited
+      CommentHidden
+      CommentDeleted
+    }
+    state Vote {
+      direction TB
+      NoVote --> Upvoted:Upvote
+      NoVote --> Downvoted:Downvote
+      Upvoted --> NoVote:Remove
+      Downvoted --> NoVote:Remove
+      Upvoted --> Downvoted:Change
+      Downvoted --> Upvoted:Change
+      NoVote
+      Upvoted
+      Downvoted
+    }
+  }
+  state Moderation {
+    direction TB
+    state ReportProcess {
+      direction TB
+      [*] --> Submitted
+      Submitted --> InReview
+      InReview --> Resolved
+      Resolved --> [*]
+[*]      Submitted
+      InReview
+      Resolved
+[*]    }
+    state CategoryMgmt {
+      direction TB
+      [*] --> Created
+      Created --> Modified
+      Modified --> Created
+      Created --> Removed
+[*]      Created
+      Modified
+      Removed
+    }
+  }
+  Authenticated --> Draft:Create Post
+  Authenticated --> CommentDraft:Write Comment
+  Authenticated --> Submitted:Report Content
+  Authenticated --> NoVote:Can Vote
+  Submitted --> Hidden:Results in
+  InReview --> CommentHidden:May Lead To
+  Admin --> Created:Manage Categories
+  UserMgmt:User Management
+  RoleMgmt:Role Management
+  ContentMgmt:Content Management
+  PostLife:Post Lifecycle
+  CommentLife:Comment Lifecycle
+  Vote:Voting
+  ReportProcess:Report Process
+  CategoryMgmt:Category Management

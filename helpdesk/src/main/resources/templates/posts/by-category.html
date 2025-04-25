@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${'Posts in ' + category.name + ' - HelpDesk'}">Category Posts - HelpDesk</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a th:href="@{/}" class="navbar-logo">HelpDesk</a>
+            <div class="navbar-links">
+                <a th:href="@{/dashboard}">Dashboard</a>
+                <a th:href="@{/posts}">Posts</a>
+                <a th:href="@{/categories}">Categories</a>
+                <a th:href="@{/user/profile}">Profile</a>
+                <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin</a>
+                <a th:href="@{/logout}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <h1 class="dashboard-header" th:text="${'Posts in Category: ' + category.name}">Category Posts</h1>
+        
+        <div class="card">
+            <div class="mb-4">
+                <a th:href="@{/posts}" class="btn btn-secondary">Back to All Posts</a>
+                <a th:href="@{/posts/create}" class="btn btn-primary ml-2">Create New Post</a>
+            </div>
+            
+            <div th:if="${posts.empty}" class="alert alert-warning">
+                No posts found in this category.
+            </div>
+            
+            <div th:each="post : ${posts}" class="dashboard-card">
+                <h3 class="dashboard-card-title">
+                    <a th:href="@{/posts/{id}(id=${post.id})}" th:text="${post.title}"></a>
+                </h3>
+                <p class="dashboard-card-content" th:text="${#strings.abbreviate(post.content, 200)}"></p>
+                <div class="flex justify-between items-center mt-3">
+                    <div>
+                        <span class="mr-2">Tags:</span>
+                        <span th:each="tag : ${post.tags}" class="mr-1">
+                            <a th:href="@{/posts/tag/{tag}(tag=${tag})}" th:text="${tag}" class="btn btn-secondary"></a>
+                        </span>
+                    </div>
+                    <div>
+                        <small th:text="${'Posted by ' + post.authorUsername + ' on ' + #dates.format(post.createdAt, 'dd MMM yyyy')}"></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

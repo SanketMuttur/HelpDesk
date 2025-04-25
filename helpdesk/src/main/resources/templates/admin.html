@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - HelpDesk</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a th:href="@{/}" class="navbar-logo">HelpDesk</a>
+            <div class="navbar-links">
+                <a th:href="@{/dashboard}">Dashboard</a>
+                <a th:href="@{/user/profile}">Profile</a>
+                <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin</a>
+                <a th:href="@{/logout}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <h1 class="dashboard-header">Admin Dashboard</h1>
+        
+        <div class="login-container">
+            <h2>User Management</h2>
+            
+            <div th:if="${users != null && !users.empty}">
+                <table style="width: 100%; color: #f9fafb; border-collapse: collapse; margin-top: 20px;">
+                    <thead>
+                        <tr>
+                            <th style="text-align: left; padding: 10px; border-bottom: 1px solid #4b5563;">ID</th>
+                            <th style="text-align: left; padding: 10px; border-bottom: 1px solid #4b5563;">Username</th>
+                            <th style="text-align: left; padding: 10px; border-bottom: 1px solid #4b5563;">Email</th>
+                            <th style="text-align: left; padding: 10px; border-bottom: 1px solid #4b5563;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="user : ${users}">
+                            <td style="padding: 10px; border-bottom: 1px solid #4b5563;" th:text="${user.id}"></td>
+                            <td style="padding: 10px; border-bottom: 1px solid #4b5563;" th:text="${user.username}"></td>
+                            <td style="padding: 10px; border-bottom: 1px solid #4b5563;" th:text="${user.email}"></td>
+                            <td style="padding: 10px; border-bottom: 1px solid #4b5563;">
+                                <a th:href="@{/admin/user/{id}(id=${user.id})}" style="color: #60a5fa; text-decoration: none;">View</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div th:if="${users == null || users.empty}">
+                <p>No users found.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

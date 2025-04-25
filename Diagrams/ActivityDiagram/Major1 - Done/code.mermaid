@@ -1,0 +1,64 @@
+---
+config:
+  look: neo
+  layout: fixed
+---
+flowchart TB
+ subgraph User["User"]
+        A2["Visit Registration Page"]
+        A1["Start"]
+        A3["Fill Registration Form"]
+        A4["Submit Form"]
+        A10["View Dashboard"]
+        A9["Login with Credentials"]
+        A11["Access Profile Page"]
+        A12["Update Profile Information"]
+        A13["Submit Changes"]
+        A17["End"]
+        A16["Logout"]
+  end
+ subgraph System["System"]
+        B1["Validate Registration Data"]
+        B2{"Is Valid?"}
+        B3["Create User Account"]
+        B4["Send Welcome Email"]
+        B5["Show Error Message"]
+        B6["Authenticate Credentials"]
+        B7{"Valid Login?"}
+        B8["Load User Data"]
+        B9["Show Error Message"]
+        B10["Validate Profile Updates"]
+        B11{"Is Valid?"}
+        B12["Save Profile Changes"]
+        B13["Show Success Message"]
+        B14["Show Error Message"]
+        B15["Invalidate Session"]
+  end
+    A1 --> A2
+    A2 --> A3
+    A3 --> A4
+    A9 --> A10 & B6
+    A10 --> A11
+    A11 --> A12
+    A12 --> A13
+    A16 --> A17 & B15
+    A4 --> B1
+    B1 --> B2
+    B2 -- Yes --> B3
+    B2 -- No --> B5
+    B3 --> B4
+    B4 --> A9
+    B5 --> A3
+    B6 --> B7
+    B7 -- Yes --> B8
+    B7 -- No --> B9
+    B8 --> A10
+    B9 --> A9
+    A13 --> B10
+    B10 --> B11
+    B11 -- Yes --> B12
+    B11 -- No --> B14
+    B12 --> B13
+    B13 --> A10
+    B14 --> A12
+    B15 --> A17
