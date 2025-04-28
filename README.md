@@ -1,4 +1,4 @@
-# HelpDesk Management System(Reddit Clone)
+# HelpDesk Management System
 
 The HelpDesk Management System is a web application designed to facilitate knowledge sharing and problem-solving within an organization or community. Users can post questions, share solutions, comment on posts, and vote for helpful content. The system includes user authentication, content moderation, and comprehensive admin features.
 
@@ -953,3 +953,13 @@ The HelpDesk Management System effectively implements numerous design patterns t
 5. **Supports extensibility**: New features can be added without major restructuring
 
 The consistent application of these design patterns demonstrates a well-architected system that follows industry best practices for enterprise application development.
+
+<br>
+
+---
+
+<br>
+
+```
+We Love OOAD ❤️
+```
